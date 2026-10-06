@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-ink: #0b0b0b;
+  --color-ink-2: #141414;
+  --color-ink-3: #1d1d1d;
+  --color-bone: #e9e3d6;
+  --color-paper: #f5f5f5;
+  --color-ash: #777777;
+  --color-ash-lt: #a3a09a;
+  --color-red: #b51e27;
+  --color-signal: #e0424b;
+  --color-brown: #5a4030;
+
+  --font-display: var(--font-anton), "Impact", "Haettenschweiler", sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-serif: var(--font-instrument), Georgia, serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  color-scheme: dark;
+  --header-h: 72px;
+}
+
+html {
+  background: var(--color-ink);
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-red);
+  color: var(--color-paper);
+}
+
+@layer components {
+/* ---------- Typographic scale ---------- */
+.t-mega {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: clamp(3.4rem, 15.5vw, 17rem);
+  line-height: 0.86;
+  letter-spacing: -0.005em;
+}
+.t-huge {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: clamp(3rem, 11.5vw, 12rem);
+  line-height: 0.88;
+}
+.t-display {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: clamp(2.4rem, 7vw, 6.5rem);
+  line-height: 0.92;
+}
+.t-title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: clamp(1.6rem, 3.2vw, 2.75rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.t-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.t-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1.5px currentColor;
+}
+
+/* ---------- Interaction ---------- */
+:focus-visible {
+  outline: 2px solid var(--color-bone);
+  outline-offset: 3px;
+}
+.on-light :focus-visible {
+  outline-color: var(--color-ink);
+}
+
+.link-underline {
+  position: relative;
+  display: inline-block;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease-out-expo);
+}
+.link-underline:hover::after,
+.link-underline:focus-visible::after,
+.link-underline[aria-current="page"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -80px;
+  z-index: 200;
+  background: var(--color-bone);
+  color: var(--color-ink);
+  padding: 12px 18px;
+  font-weight: 700;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 16px;
+}
+
+/* ---------- Film grain (very subtle) ---------- */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- Marquee ---------- */
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* ---------- Utilities ---------- */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.pad-x { padding-left: 1.25rem; padding-right: 1.25rem; }
+@media (min-width: 768px) { .pad-x { padding-left: 2.5rem; padding-right: 2.5rem; } }
+@media (min-width: 1440px) { .pad-x { padding-left: 4rem; padding-right: 4rem; } }
+
+.touch-target { min-height: 44px; min-width: 44px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .marquee-track { animation: none; }
+  *, ::before, ::after { transition-duration: 0.01ms !important; }
+}
+
+/* ---------- Page transition ---------- */
+@keyframes page-enter {
+  from { opacity: 0.001; transform: translate3d(0, 14px, 0); }
+  to { opacity: 1; transform: none; }
+}
+.page-enter { animation: page-enter 0.6s var(--ease-out-expo) both; }
+
+.t-hero {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: clamp(3rem, min(14.2vw, 17svh), 14rem);
+  line-height: 0.88;
+}
+
+}
